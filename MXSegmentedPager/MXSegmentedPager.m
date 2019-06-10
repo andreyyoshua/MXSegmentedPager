@@ -51,12 +51,17 @@
     NSMutableArray *images          = [NSMutableArray arrayWithCapacity:_count];
     NSMutableArray *selectedImages  = [NSMutableArray arrayWithCapacity:_count];
     NSMutableArray *titles          = [NSMutableArray arrayWithCapacity:_count];
+    NSMutableArray *titleViews      = [NSMutableArray arrayWithCapacity:_count];
     
     for (NSInteger index = 0; index < _count; index++) {
         
         titles[index] = [NSString stringWithFormat:@"Page %ld", (long)index];
         if ([self.dataSource respondsToSelector:@selector(segmentedPager:titleForSectionAtIndex:)]) {
             titles[index] = [self.dataSource segmentedPager:self titleForSectionAtIndex:index];
+        }
+        
+        if ([self.dataSource respondsToSelector:@selector(segmentedPager:viewForSectionAtIndex:)]) {
+            titleViews[index] = [self.dataSource segmentedPager:self viewForSectionAtIndex:index];
         }
         
         if ([self.dataSource respondsToSelector:@selector(segmentedPager:imageForSectionAtIndex:)]) {
@@ -78,6 +83,7 @@
     self.segmentedControl.sectionImages = images;
     self.segmentedControl.sectionSelectedImages = selectedImages;
     self.segmentedControl.sectionTitles = titles;
+    self.segmentedControl.sectionTitleViews = titleViews;
     [self.segmentedControl setNeedsDisplay];
     
     [self.pager reloadData];
@@ -286,6 +292,7 @@
     }
     
     NSString* title = self.segmentedControl.sectionTitles[index];
+    UIView* titleView = self.segmentedControl.sectionTitleViews[index];
     UIView* view = self.pager.selectedPage;
                     
     if ([self.delegate respondsToSelector:@selector(segmentedPager:didSelectViewWithTitle:)]) {
